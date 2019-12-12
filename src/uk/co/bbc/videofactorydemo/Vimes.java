@@ -5,9 +5,11 @@ import me.acdean.factory.Factory;
 
 public class Vimes extends Component {
     public static final String NAME = "Vimes";
+    private static final String DESCRIPTION = "Validates the request.";
 
     public Vimes(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
+        setDescription(DESCRIPTION);
         addInput(Balham.NAME);
     }
 

@@ -5,9 +5,11 @@ import me.acdean.factory.Factory;
 
 public class Rosetta extends Component {
     public static final String NAME = "Rosetta";
+    private static final String DESCRIPTION = "Resolves brands.";
 
     public Rosetta(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
+        setDescription(DESCRIPTION);
         addInput(Barrister.NAME);
     }
 
