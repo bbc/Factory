@@ -1,9 +1,9 @@
 package me.acdean.factory;
 
-import me.acdean.factory.example.ExampleFactory;
 import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.core.PFont;
+import uk.co.bbc.videofactorydemo.VideoFactory;
 
 /*
 ** Main replaces the processing sketch file.
@@ -46,7 +46,7 @@ public class Main extends PApplet {
         cam.setMaximumDistance(3300);
         cam.setMinimumDistance(250);
 
-        factory = new ExampleFactory(this);
+        factory = new VideoFactory(this);
         factory.setupFactory();
         factory.addMessage();
     }
