@@ -2,6 +2,7 @@ package uk.co.bbc.videofactorydemo;
 
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
+import me.acdean.factory.Message;
 
 public class ToddIn extends Component {
 
@@ -14,6 +15,12 @@ public class ToddIn extends Component {
 
     @Override
     public void click() {
-        factory.addMessage(NAME);
+        if (p.random(100) < 50) {
+            factory.addMessage(NAME)
+                    .type(Message.VIDEO);
+        } else {
+            factory.addMessage(NAME)
+                    .type(Message.AUDIO);
+        }
     }
 }

@@ -3,6 +3,7 @@ package uk.co.bbc.videofactorydemo;
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
 import me.acdean.factory.Main;
+import me.acdean.factory.Message;
 import me.acdean.factory.Route;
 
 //  https://daskboard.cloud.bbc.co.uk/workflows/gv/int/d6a3803f-ffd0-4407-8d8d-970e44072cc8
@@ -61,14 +62,14 @@ public class VideoFactory extends Factory {
         addComponent(new WhitePages(this, x, y02));
         addComponent(new Bifurcate(this, x, y04));
         addComponent(new Movver(this, x, y06));
+        addComponent(new Bagpuss(this, x, y08));
+        addComponent(new Pedant(this, x, y10));
         addComponent(new LegacyClips(this, x, y12));
         addComponent(new John(this, x, y16));
         x += w;
 
         addComponent(new Subherd(this, x, y02));
         addComponent(new Honda(this, x, y04));
-        addComponent(new Bagpuss(this, x, y08));
-        addComponent(new Pedant(this, x, y10));
         addComponent(new Delilah(this, x, y12));
         addComponent(new Clips(this, x, y14));
         addComponent(new Yoko(this, x, y16));
@@ -194,6 +195,7 @@ public class VideoFactory extends Factory {
     // a start message
     @Override
     public void addMessage() {
-        addMessage(Rorschach.NAME);
+        addMessage(Rorschach.NAME)
+                .type(Message.VIDEO);
     }
 }

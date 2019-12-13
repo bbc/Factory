@@ -2,6 +2,7 @@ package uk.co.bbc.videofactorydemo;
 
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
+import me.acdean.factory.Message;
 
 public class Rights extends Component {
     public static final String NAME = "Rights";
@@ -13,6 +14,7 @@ public class Rights extends Component {
 
     @Override
     public void click() {
-        factory.addMessage(NAME);
+        factory.addMessage(NAME)
+                .property(Message.Property.SUBTITLE_HANDLER, Distiller.NAME);
     }
 }
