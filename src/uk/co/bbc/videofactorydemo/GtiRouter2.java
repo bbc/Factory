@@ -11,6 +11,7 @@ public class GtiRouter2 extends Component {
 
     public GtiRouter2(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
+        type = LAMBDA;
         setDescription(DESCRIPTION);
         addInput(CropConfigurator.NAME);
     }

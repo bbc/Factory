@@ -10,6 +10,7 @@ public class GtiEdc extends Component {
 
     public GtiEdc(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
+        type = LAMBDA;
         setDescription(DESCRIPTION);
         addInput(GtiRouter2.NAME);
     }
