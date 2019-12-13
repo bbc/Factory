@@ -11,4 +11,9 @@ public class Distiller extends Component {
         type = LAMBDA;
         addInput(Subherd.NAME);
     }
+
+    @Override
+    public void processMessage() {
+        readWorkWriteEmit();
+    }
 }

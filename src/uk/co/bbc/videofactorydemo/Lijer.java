@@ -17,10 +17,19 @@ public class Lijer extends Component {
 
     @Override
     public void emit() {
-        // split to john
-        currentMessage.routeTo(Pedant.NAME);
-        factory.addMessage(
-                new Message(factory, Route.routeName(this.name, John.NAME))
-        );
+        if (currentMessage.type == Message.AUDIO) {
+            // audio goes to movver and john
+            factory.addMessage(
+                    new Message(factory, Route.routeName(this.name, Movver.NAME))
+                        .type(Message.AUDIO)
+            );
+        } else {
+            // video goes to pedant and john
+            factory.addMessage(
+                    new Message(factory, Route.routeName(this.name, Pedant.NAME))
+                        .type(Message.VIDEO)
+            );
+        }
+        currentMessage.routeTo(John.NAME);
     }
 }

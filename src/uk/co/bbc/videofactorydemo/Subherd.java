@@ -2,6 +2,7 @@ package uk.co.bbc.videofactorydemo;
 
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
+import me.acdean.factory.Message;
 
 public class Subherd extends Component {
     public static final String NAME = "Subherd";
@@ -12,5 +13,10 @@ public class Subherd extends Component {
         setDescription(DESCRIPTION);
         addInput(Bifurcate.NAME);
         addInput(WhitePages.NAME);
+    }
+
+    @Override
+    public void emit() {
+        routeToProperty(Message.Property.SUBTITLE_HANDLER);
     }
 }

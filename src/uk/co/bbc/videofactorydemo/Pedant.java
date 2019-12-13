@@ -14,9 +14,14 @@ public class Pedant extends Component {
         addInput(Lijer.NAME);
     }
 
-    // this is a loop - pedant -> bagpuss -> pedant -> monk
+    // this is a loop - pedant -> bagpuss -> pedant -> (monk | lovett)
     @Override
     public void emit() {
-        loop(this.name, Bagpuss.NAME, Monk.NAME);
+        // switch depending on whether timing is accurate (random)
+        if (p.random(100) < 50) {
+            loop(this.name, Bagpuss.NAME, Monk.NAME);
+        } else {
+            loop(this.name, Bagpuss.NAME, Lovett.NAME);
+        }
     }
 }
