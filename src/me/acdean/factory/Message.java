@@ -2,10 +2,14 @@ package me.acdean.factory;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static processing.core.PApplet.println;
 import processing.core.PImage;
 
 public class Message {
+
+    Logger logger = LoggerFactory.getLogger(Message.class);
 
     public static final int INACTIVE = 999;
     private static final float STEPS = 100.0f;
@@ -20,7 +24,7 @@ public class Message {
     public static final int VIDEO       = 5;
 
     Factory factory;
-    int type;
+    public int type;
     int state;
     int count;  // count can be negative - won't show
     Route route;
@@ -114,7 +118,7 @@ public class Message {
                 count++;
             } else {
                 // add the message to the destination component's queue
-                println("Adding", this, "to", route.end);
+                logger.info("Adding [{}] to [{}]", this, route.end);
                 factory.components.get(route.end).incoming.add(this);
                 // mark as inactive
                 count = INACTIVE;
@@ -124,9 +128,10 @@ public class Message {
 
     public class Property {
         // common properties
-        public static final String SOURCE       = "Source";
-        public static final String DESTINATION  = "Destination";
-        public static final String ENCODER      = "Encoder";
+        public static final String SOURCE           = "Source";
+        public static final String DESTINATION      = "Destination";
+        public static final String ENCODER          = "Encoder";
+        public static final String SUBTITLE_HANDLER = "SubtitleHandler";
     }
 
     @Override

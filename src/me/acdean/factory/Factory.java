@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processing.core.PApplet;
-import static processing.core.PApplet.println;
 import processing.core.PConstants;
 import processing.core.PImage;
 
@@ -49,23 +48,22 @@ public abstract class Factory {
         mysqlImg = p.loadImage("mysql.png");
         blackBoxImg = p.loadImage("blackBox.png");
 
-        println("Factory Calculate Routes");
+        logger.info("Factory Calculate Routes");
         // calculate routes and outputs from inputs
-        println("INPUTS");
+        logger.info("INPUTS");
         for (Component component : components.values()) {
             for (int i = 0 ; i < component.inputs.size() ; i++) {
                 Component input = components.get(component.inputs.get(i));
-                println(component.name, "<-", input);
-                println(component.name, "<-", input.name);
+                logger.info("{} <- {}", component.name, input.name);
                 input.outputs.add(component.name);
                 Route route = new Route(this, input.name, component.name);
                 routes.put(route.name, route);
             }
         }
-        println("OUTPUTS");
+        logger.info("OUTPUTS");
         for (Component component : components.values()) {
             for (String output : component.outputs) {
-                println(component.name, "->", output);
+                logger.info("{} -> {}", component.name, output);
             }
         }
 
@@ -121,12 +119,13 @@ public abstract class Factory {
 
     // you can add a message using only component name if there's only one output for that component
     // useful for starting messages at start nodes
-    public final void addMessage(String name) {
+    public final Message addMessage(String name) {
         logger.info("AddMessage [{}]", name);
         Component c = components.get(name);
         Message m = new Message(this, Route.routeName(name, c.outputs.get(0)))
                 .property(Message.Property.SOURCE, name);
         messages.add(m);
+        return m;
     }
 
     abstract public void addMessage();
@@ -159,9 +158,9 @@ public abstract class Factory {
                     if (p.mouseY > top) {
                         float bottom = p.screenY(component.x, component.y + 100);
                         if (p.mouseY < bottom) {
-                            // TODO
                             p.cursor(PApplet.HAND);
-                            logger.info("Component [{}]", component);
+                            logger.info("MousePressed: Component [{}]", component);
+                            component.click();
                             break;
                         }
                     }

@@ -1,5 +1,7 @@
 package me.acdean.factory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import peasy.PeasyCam;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -11,6 +13,8 @@ import uk.co.bbc.videofactorydemo.VideoFactory;
 
 public class Main extends PApplet {
 
+    Logger logger = LoggerFactory.getLogger("Main");
+    
     PFont font;
     Factory factory;
     public PeasyCam cam;
@@ -29,11 +33,12 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
-        println("setup");
-        println("Sketch Path:", sketchPath());
-        println("Data Path:", dataPath(""));
+        logger.debug("setup");
+        logger.debug("Sketch Path [{}]", sketchPath());
+        logger.debug("Data Path [{}]", dataPath(""));
         font = createFont("Liberation Sans Bold", 100);
         //printArray(PFont.list());
+        frameRate(50);
         rectMode(CENTER);
         ellipseMode(CENTER);
         imageMode(CENTER);
@@ -63,14 +68,14 @@ public class Main extends PApplet {
             if (keyCode == RIGHT) cam.pan(10, 0);
         }
         if (follow) {
-            println("Following");
+            logger.debug("Following");
             float[] c = cam.getLookAt();
-            println(c[0], c[1], c[2]);
-            println(factory.messages.get(0).x, factory.messages.get(0).y);
+            logger.debug("{} {} {}", c[0], c[1], c[2]);
+            logger.debug("xy: {}, {}", factory.messages.get(0).x, factory.messages.get(0).y);
             cam.lookAt(factory.messages.get(0).x, factory.messages.get(0).y, 0);
         }
         if (frameCount % 60 == 0) {
-            println("Distance: " + cam.getDistance());
+            logger.debug("Distance [{}]", cam.getDistance());
         }
 
         if (video) {
@@ -88,6 +93,9 @@ public class Main extends PApplet {
         }
         if (key == 'f') {
             follow = true;
+        }
+        if (key == 's') {
+            saveFrame("VideoFactory_#####.png");
         }
     }
 
