@@ -249,6 +249,7 @@ public class Component {
                 }
             }
         }
+        p.cursor(PApplet.ARROW);
         return false;
     }
 
