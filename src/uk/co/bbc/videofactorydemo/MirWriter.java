@@ -12,4 +12,10 @@ public class MirWriter extends Component {
         setDescription(DESCRIPTION);
         addInput(Mami.NAME);
     }
+
+    // maybe do this as a component attribute?
+    @Override
+    public void processMessage() {
+        addAction(Action.SINK);
+    }
 }

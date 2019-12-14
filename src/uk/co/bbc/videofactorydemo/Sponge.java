@@ -17,7 +17,7 @@ public class Sponge extends Component {
     public void processMessage() {
         Factory.logger.info("Sponge ProcessMessage");
         addAction(Action.WRITE_TO_S3, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
         Factory.logger.info("Actions: [{}]", actions.size());
     }
 }

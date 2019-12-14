@@ -18,7 +18,7 @@ public class Delilah extends Component {
         Factory.logger.info("Delilah ProcessMessage");
         addAction(Action.READ_FROM_S3, 30);
         addAction(Action.WRITE_TO_S3, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
         Factory.logger.info("Actions: [{}]", actions.size());
     }
 

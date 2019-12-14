@@ -42,7 +42,7 @@ public class Main extends PApplet {
         rectMode(CENTER);
         ellipseMode(CENTER);
         imageMode(CENTER);
-        hint(ENABLE_DEPTH_SORT);
+        //hint(ENABLE_DEPTH_SORT);
 
         // set up camera
         cam = new PeasyCam(this, 1000);
@@ -84,6 +84,7 @@ public class Main extends PApplet {
                 System.exit(0);
             }
         }
+        logger.info("Messages [{}]", factory.messages.size());
     }
 
     @Override
@@ -96,6 +97,9 @@ public class Main extends PApplet {
         }
         if (key == 's') {
             saveFrame("VideoFactory_#####.png");
+        }
+        if (key == 'd') {
+            factory.debug();
         }
     }
 

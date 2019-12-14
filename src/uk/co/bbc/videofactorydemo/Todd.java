@@ -15,4 +15,10 @@ public class Todd extends Component {
         addInput(GtiEts.NAME);
         addInput(Pleasant.NAME);
     }
+
+    // maybe do this as a component attribute?
+    @Override
+    public void processMessage() {
+        addAction(Action.SINK);
+    }
 }

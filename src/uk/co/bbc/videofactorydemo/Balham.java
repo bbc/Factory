@@ -18,6 +18,6 @@ public class Balham extends Component {
     public void processMessage() {
         Factory.logger.info("Balham ProcessMessage");
         addAction(Action.METADATA_FROM_S3, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
     }
 }

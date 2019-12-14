@@ -18,6 +18,6 @@ public class Vitruvian extends Component {
         Factory.logger.info("Vitruvian ProcessMessage");
         addAction(Action.METADATA_FROM_S3, 30);
         addAction(Action.WRITE_DOG_TO_S3, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
     }
 }

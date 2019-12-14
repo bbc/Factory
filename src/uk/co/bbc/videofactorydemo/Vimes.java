@@ -17,6 +17,6 @@ public class Vimes extends Component {
     public void processMessage() {
         Factory.logger.info("Vimes ProcessMessage");
         addAction(Action.METADATA_FROM_S3, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
     }
 }

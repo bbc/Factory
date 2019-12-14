@@ -17,6 +17,6 @@ public class Rosetta extends Component {
     public void processMessage() {
         Factory.logger.info("Rosetta ProcessMessage");
         addAction(Action.READ_FROM_PIPS, 30);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
     }
 }
