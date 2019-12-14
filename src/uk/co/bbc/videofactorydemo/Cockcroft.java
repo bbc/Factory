@@ -1,6 +1,5 @@
 package uk.co.bbc.videofactorydemo;
 
-import com.sun.xml.internal.ws.api.message.saaj.SAAJFactory;
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
 import me.acdean.factory.Message;
@@ -23,14 +22,13 @@ public class Cockcroft extends Component {
     // messages are split into various types, encoders and final destinations
     @Override
     public void emit() {
-        if (currentMessage.property(Message.Property.SOURCE).equals(MezToAudio.NAME)) {
-            // two of these go to edc
-            factory.addMessage(
-                    new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
-                        .type(Message.AUDIO)
-                        .property(Message.Property.ENCODER, GtiEdc.NAME)
-                        .property(Message.Property.DESTINATION, Mattress.NAME)
-            );
+        String source = currentMessage.property(Message.Property.SOURCE);
+        if (source != null && source.equals(MezToAudio.NAME)) {
+            // split into two, both going go to edc
+            currentMessage.route(name, CropConfigurator.NAME)
+                    .type(Message.AUDIO)
+                    .property(Message.Property.ENCODER, GtiEdc.NAME)
+                    .property(Message.Property.DESTINATION, Mattress.NAME);
             factory.addMessage(
                     new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
                         .type(Message.AUDIO)
@@ -39,12 +37,12 @@ public class Cockcroft extends Component {
                         .property(Message.Property.DESTINATION, Mattress.NAME)
             );
         } else {
-            factory.addMessage(
-                    new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
-                        .type(Message.CLIP)
-                        .property(Message.Property.ENCODER, GtiBitmovin.NAME)
-                        .property(Message.Property.DESTINATION, Todd.NAME)
-            );
+            // split into n going various places
+            // TODO make this accurate...
+            currentMessage.route(this.name, CropConfigurator.NAME)
+                    .type(Message.CLIP)
+                    .property(Message.Property.ENCODER, GtiBitmovin.NAME)
+                    .property(Message.Property.DESTINATION, Todd.NAME);
             factory.addMessage(
                     new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
                         .type(Message.PROXY)
