@@ -16,12 +16,13 @@ Libraries
 
 I use the following libraries. Add them to your netbeans project (I copy all mine into a single directory for ease):
 
-core.jar - from Processing distribution
-gluegen-rt-natives-macosx-universal.jar - from Processing distribution
-gluegen-rt.jar - from Processing distribution
-jogl-all-natives-macosx-universal.jar - from Processing distribution
-jogl-all.jar - from Processing distribution
-peasy-math.jar - from Processing PeasyCam libray
-peasycam.jar - from Processing PeasyCam libray
-slf4j-api-1.7.21.jar - standard slf4j library
-slf4j-simple-1.7.21.jar - standard slf4j library
+* core.jar - from Processing distribution
+* gluegen-rt-natives-macosx-universal.jar - from Processing distribution
+* gluegen-rt.jar - from Processing distribution
+* jogl-all-natives-macosx-universal.jar - from Processing distribution
+* jogl-all.jar - from Processing distribution
+* peasy-math.jar - from Processing PeasyCam libray
+* peasycam.jar - from Processing PeasyCam libray
+* slf4j-api-1.7.21.jar - standard slf4j library
+* slf4j-simple-1.7.21.jar - standard slf4j library
+
