@@ -2,7 +2,14 @@ package me.acdean.factory;
 
 // basically a bezier curve
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import processing.core.PApplet;
+import processing.core.PShape;
+
 public class Route {
+
+    private static final Logger logger = LoggerFactory.getLogger(Route.class);
 
     private static final int CONTROL_OFFSET = 200;
     private static final int DECAL_DEPTH = -10;
@@ -19,11 +26,13 @@ public class Route {
     float x1, y1;
     float x2, y2;
     float x3, y3;
+    PApplet p;
 
     Route(Factory factory, String start, String end) {
         this.factory = factory;
         this.start = start;
         this.end = end;
+        this.p = factory.p;
         name = routeName(start, end);
         coords();
     }
@@ -75,11 +84,24 @@ public class Route {
         return this;
     }
 
+    // draw is unused
     void draw() {
         factory.p.noFill();
         factory.p.stroke(0, 255, 0);
         factory.p.strokeWeight(2);
         factory.p.bezier(x0, y0, DECAL_DEPTH, x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);
+    }
+    // try to create a shape
+    PShape draw(PShape shape) {
+        logger.info("Draw");
+        PShape s = p.createShape();
+        s.beginShape();
+        s.noFill();
+        s.stroke(0, 255, 0);
+        s.vertex(x0, y0, DECAL_DEPTH);
+        s.bezierVertex(x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);
+        s.endShape();
+        return s;
     }
 
     @Override

@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import processing.core.PApplet;
-import static processing.core.PApplet.BOTTOM;
-import static processing.core.PApplet.CENTER;
+import processing.core.PConstants;
+//import static processing.core.PApplet.BOTTOM;
+//import static processing.core.PApplet.CENTER;
+import processing.core.PShape;
 
 public class Component {
 
@@ -25,6 +27,9 @@ public class Component {
     // size of component (size of images)
     public static final int WIDTH = 200;
     public static final int HEIGHT = 200;
+    public static final int HWIDTH = WIDTH / 2;
+    public static final int HHEIGHT = HEIGHT / 2;
+    public static final int Z = 0;  // z depth of the images
 
     public Factory factory;
     public PApplet p;
@@ -56,48 +61,58 @@ public class Component {
     }
 
     // move to factory?
-    public void draw() {
+    public PShape draw(PShape unused) {
+        // text is not currently printed
         float textY = y + HEIGHT / 2 + 40;
+        // input is a special case
+        if (type == INPUT) {
+            PShape shape = p.createShape(PConstants.ELLIPSE, x, y, HHEIGHT, HHEIGHT);
+            shape.setStrokeWeight(5);
+            shape.setStroke(0xffff0000);
+            shape.setFill(0xff000000);
+            shape.endShape();;
+            return shape;
+        }
+        if (type == CONNECTOR) {
+            // nothing;
+            return null;
+        }
+        // images
+        PShape shape = p.createShape();
+        shape.beginShape(PConstants.QUAD);
+        shape.noStroke();
+        shape.textureMode(PConstants.NORMAL);
         switch (type) {
-            case INPUT: // ellipse
-                p.stroke(255, 0, 0);
-                p.fill(0, 0, 0);
-                p.ellipse(x, y, HEIGHT / 2, HEIGHT / 2);
-                // image is smaller so...
-                textY -= 20;
-                break;
-
             case LAMBDA:
-                p.image(factory.lambdaImg, x, y);
+                shape.texture(factory.lambdaImg);
                 break;
 
             case DYNAMO_DB:
-                p.image(factory.dynamoImg, x, y);
+                shape.texture(factory.dynamoImg);
                 break;
 
             case MYSQL_DB:
-                p.image(factory.mysqlImg, x, y);
+                shape.texture(factory.mysqlImg);
                 break;
 
             case BLACK_BOX:
-                p.image(factory.blackBoxImg, x, y);
-                // image is bigger to bodge this
-                textY += 50;
-                break;
-
-            case CONNECTOR:
+                shape.texture(factory.blackBoxImg);
+//                // image is bigger to bodge this
+//                textY += 50;
                 break;
 
             default:    // box
-                p.image(factory.ec2Img, x, y);
+                shape.texture(factory.ec2Img);
                 break;
         }
-        if (type != CONNECTOR) {
-            p.stroke(0);
-            p.fill(255);
-            p.textAlign(CENTER, BOTTOM);
-            p.text(name, x, textY);
-        }
+        shape.vertex(x - HWIDTH, y - HHEIGHT, Z, 0, 0);
+        shape.vertex(x + HWIDTH, y - HHEIGHT, Z, 1, 0);
+        shape.vertex(x + HWIDTH, y + HHEIGHT, Z, 1, 1);
+        shape.vertex(x - HWIDTH, y + HHEIGHT, Z, 0, 1);
+        shape.endShape();
+
+        // TODO names
+        return shape;
     }
 
     public void tick() {
@@ -147,6 +162,13 @@ public class Component {
                     //Main.println("EMIT");
                     emit();
                     break;
+                case Action.SINK:
+                    // eat the message
+                    factory.logger.info("Eating message {}", factory.messages.size());
+                    factory.messages.remove(currentMessage);
+                    currentMessage = null;
+                    factory.logger.info("Eating message {}", factory.messages.size());
+                    break;
             }
         }
     }
@@ -160,10 +182,13 @@ public class Component {
 //        add(Action.PAUSE, 5);
 //        add(Action.READ_FROM_S3, 10);
 //        add(Action.PAUSE, 5);
-        addAction(Action.EMIT, 1);
+        addAction(Action.EMIT);
         //Main.println("Actions: ", actions.size());
     }
 
+    public void addAction(int type) {
+        addAction(type, 1);
+    }
     public void addAction(int type, int count) {
         for (int i = 0 ; i < count ; i++) {
             actions.add(new Action(type));
@@ -222,7 +247,8 @@ public class Component {
         public static final int WRITE_TO_PIPS       = 40;
         public static final int WRITE_TO_MIR        = 45;
         public static final int WORK                = 50;
-        public static final int EMIT                = 99;
+        public static final int EMIT                = 98;
+        public static final int SINK                = 99;
 
         int type;
         private int length;
@@ -267,6 +293,6 @@ public class Component {
 
     @Override
     public String toString() {
-        return "" + name + ": " + type;
+        return "" + name + ": " + type + " (Actions " + actions.size() + ")";
     }
 }

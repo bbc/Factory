@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PImage;
+import processing.core.PShape;
 
 public abstract class Factory {
 
@@ -24,6 +25,7 @@ public abstract class Factory {
     // copy of papplet fields
     public int width, height;
     Component mouseOverComponent = null;
+    PShape routeShape, componentShape;
 
     public Factory(Main papplet) {
         super();
@@ -80,17 +82,39 @@ public abstract class Factory {
             m.tick();
         }
 
-        // draw everything (TODO pshape for static bits)
-        for (Route r : routes.values()) {
-            r.draw();
-        }
-        mouseOverComponent = null;
-        for (Component c : components.values()) {
-            c.draw();
-            if (c.mouseIsOver()) {
-                mouseOverComponent = c;
+        // define and use a PShape for routes
+        if (routeShape == null) {
+            routeShape = p.createShape(PConstants.GROUP);
+            routeShape.beginShape();
+            routeShape.noFill();
+            routeShape.stroke(0, 255, 0);
+            routeShape.strokeWeight(2);
+            for (Route r : routes.values()) {
+                PShape s = r.draw(routeShape);
+                routeShape.addChild(s);
             }
         }
+        p.shape(routeShape);
+
+        // define and use a PShape for components
+        if (componentShape == null) {
+            componentShape = p.createShape(PConstants.GROUP);
+            for (Component c : components.values()) {
+                PShape s = c.draw(componentShape);
+                componentShape.addChild(s);
+            }
+        }
+        p.shape(componentShape);
+
+        // mouseover text (TODO optimise? quadtree?)
+        mouseOverComponent = null;
+        // this is expensive
+//        for (Component c : components.values()) {
+//            if (c.mouseIsOver()) {
+//                mouseOverComponent = c;
+//            }
+//        }
+
         for (Message m : messages) {
             m.draw();
         }
@@ -171,5 +195,15 @@ public abstract class Factory {
 
     public float dist2(float x1, float y1, float x2, float y2) {
         return ((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1));
+    }
+
+    // output current state
+    public void debug() {
+        for (Map.Entry<String, Component> c : components.entrySet()) {
+            logger.info("Component [{}]: {}", c.getKey(), c.getValue());
+        }
+        for (Message m  : messages) {
+            logger.info("Message [{}]", m);
+        }
     }
 }
