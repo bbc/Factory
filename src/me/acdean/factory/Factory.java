@@ -96,6 +96,14 @@ public abstract class Factory {
         }
         p.shape(routeShape);
 
+        // all the text
+        p.stroke(0);
+        p.fill(255);
+        p.textAlign(PConstants.CENTER, PConstants.BOTTOM);
+        for (Component c : components.values()) {
+            c.drawLabel();
+        }
+
         // define and use a PShape for components
         if (componentShape == null) {
             componentShape = p.createShape(PConstants.GROUP);
@@ -205,5 +213,28 @@ public abstract class Factory {
         for (Message m  : messages) {
             logger.info("Message [{}]", m);
         }
+    }
+
+    void drawArrow(float srcX, float srcY, float dstX, float dstY) {
+        float d = PApplet.dist(srcX, srcY, dstX, dstY);
+        PShape s = p.createShape();
+        s.beginShape();
+        s.stroke(0);
+        s.fill(255);
+        s.strokeWeight(2);
+        s.vertex(d - 25, 0);
+        s.vertex(d - 50, 25);
+        s.vertex(d - 50, 10);
+        s.vertex(25, 10);
+        s.vertex(25, -10);
+        s.vertex(d - 50, -10);
+        s.vertex(d - 50, -25);
+        s.endShape(PConstants.CLOSE);
+        float a = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        p.pushMatrix();
+        p.translate(srcX, srcY);
+        p.rotate(a);
+        p.shape(s);
+        p.popMatrix();
     }
 }

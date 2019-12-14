@@ -62,8 +62,6 @@ public class Component {
 
     // move to factory?
     public PShape draw(PShape unused) {
-        // text is not currently printed
-        float textY = y + HEIGHT / 2 + 40;
         // input is a special case
         if (type == INPUT) {
             PShape shape = p.createShape(PConstants.ELLIPSE, x, y, HHEIGHT, HHEIGHT);
@@ -115,6 +113,17 @@ public class Component {
         return shape;
     }
 
+    public void drawLabel() {
+        if (type != CONNECTOR) {
+            float textY = y + HEIGHT / 2 + 40;
+            // INPUTs are smaller
+            if (type == INPUT) {
+                textY -= 20;
+            }
+            p.text(name, x, textY);
+        }
+    }
+
     public void tick() {
         if (actions.size() == 0) {
             // currently inactive so read next message
@@ -154,8 +163,9 @@ public class Component {
                 case Action.WORK:
                     //Main.println("WORK");
                     p.pushMatrix();
-                    p.translate(0, 0, 5);
-                    p.image(factory.cogsImg, x, y, 100, 100);
+                    p.translate(x, y, 10);
+                    p.rotateZ(PApplet.radians(p.frameCount));
+                    p.image(factory.cogsImg, 0, 0, 100, 100);
                     p.popMatrix();
                     break;
                 case Action.EMIT:
