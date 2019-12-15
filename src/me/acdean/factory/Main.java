@@ -48,7 +48,7 @@ public class Main extends PApplet {
         cam = new PeasyCam(this, 1000);
         // replace rotation with panning
         cam.setLeftDragHandler(cam.getPanDragHandler());
-        cam.setMaximumDistance(3300);
+        cam.setMaximumDistance(3500);
         cam.setMinimumDistance(250);
 
         factory = new VideoFactory(this);
