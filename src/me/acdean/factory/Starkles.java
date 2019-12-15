@@ -82,7 +82,9 @@ public class Starkles extends ArrayList<Starkles.Starkle> {
         }
 
         void draw() {
-            int c = (int)PApplet.map(count, 0, MAX_LIFE, 0, 255);
+//            int c = (int)PApplet.map(count, 0, MAX_LIFE, 0, 255);
+            // 0 -> black, 100 -> white, but not linear
+            int c = (int)(255 * p.sin(count * PConstants.HALF_PI / MAX_LIFE));
             if (count > 0) {
                 p.pushMatrix();
                 p.translate(x, y, 100);
