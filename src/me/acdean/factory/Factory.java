@@ -19,6 +19,7 @@ public abstract class Factory {
     public Map<String, Component> components = new HashMap<>();
     public Map<String, Route> routes = new HashMap<>();
     public List<Message> messages = new ArrayList<>();
+    public Starkles starkles;
     PImage messageImg, audioImg, subtitleImg, clipImg, proxyImg, videoImg;
     PImage ec2Img, lambdaImg, bucketImg, cogsImg, blackBoxImg;
     PImage dynamoImg, mysqlImg;
@@ -36,12 +37,12 @@ public abstract class Factory {
 
     public void setupFactory() {
         // load all the images
-        messageImg = p.loadImage("message.png");
-        audioImg = p.loadImage("audio_message.png");
-        subtitleImg = p.loadImage("subtitle_message.png");
-        clipImg = p.loadImage("clip_message.png");
-        proxyImg = p.loadImage("proxy_message.png");
-        videoImg = p.loadImage("video_message.png");
+        messageImg = p.loadImage("message2.png");
+        audioImg = p.loadImage("audio_message2.png");
+        subtitleImg = p.loadImage("subtitle_message2.png");
+        clipImg = p.loadImage("clip_message2.png");
+        proxyImg = p.loadImage("proxy_message2.png");
+        videoImg = p.loadImage("video_message2.png");
         lambdaImg = p.loadImage("lambda.png");
         ec2Img = p.loadImage("ec2.png");
         bucketImg = p.loadImage("bucket.png");
@@ -71,6 +72,8 @@ public abstract class Factory {
 
         // make the loops loops
         fixupRoutes();
+
+        starkles = new Starkles(p);
     }
 
     public void drawFactory() {
@@ -125,7 +128,12 @@ public abstract class Factory {
 
         for (Message m : messages) {
             m.draw();
+            if (p.random(100) < 10) {
+                starkles.add(m.x, m.y);
+            }
         }
+        // draw all the starkles
+        starkles.update();
 
         // visual flag for now, description text later. HUD?
         if (mouseOverComponent != null && mouseOverComponent.description != null) {

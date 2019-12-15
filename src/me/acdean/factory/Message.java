@@ -15,7 +15,8 @@ public class Message {
 
     public static final int INACTIVE = 999;
     private static final float STEPS = 100.0f;
-    private static final float DECAL_DEPTH = 10.0f;
+    private static final float DECAL_DEPTH = 50.0f;
+    private static final float SIZE = 75.0f;
 
     // types
     public static final int GENERIC     = 0;
@@ -63,7 +64,7 @@ public class Message {
         if (shapes == null) {
             shapes = new PShape[TYPES];
             for (int i = 0 ; i < TYPES ; i++) {
-                shapes[i] = p.createShape(PConstants.BOX, 50);
+                shapes[i] = p.createShape(PConstants.BOX, SIZE);
                 shapes[i].setTextureMode(PConstants.IMAGE);
                 switch(i) {
                     case GENERIC:
