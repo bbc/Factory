@@ -122,6 +122,7 @@ public class Component {
         }
     }
 
+    private static final int BUCKET_DISTANCE = 150;
     public void tick() {
         if (actions.size() == 0) {
             // currently inactive so read next message
@@ -141,22 +142,42 @@ public class Component {
                 case Action.READ_FROM_S3:
                     //Main.println("READ_FROM_S3");
                     p.pushMatrix();
-                    p.translate(0, 0, 5);
-                    p.image(factory.bucketImg, x - 100, y - 100, 100, 100);
+                    p.translate(0, 0, 10);
+                    p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
+                    factory.drawArrow(x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y, 50, 0xff00ff00);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_S3:
                     //Main.println("WRITE_TO_S3");
                     p.pushMatrix();
-                    p.translate(0, 0, 5);
-                    p.image(factory.bucketImg, x + 100, y - 100, 100, 100);
+                    p.translate(0, 0, 10);
+                    p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
+                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 50, 0xffff0000);
                     p.popMatrix();
                     break;
                 case Action.READ_FROM_PIPS:
                     //Main.println("WRITE_FROM_PIPS");
+                    p.pushMatrix();
+                    p.translate(0, 0, 10);
+                    p.image(factory.mysqlImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
+                    factory.drawArrow(x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y, 10, 0xff00ff00);
+                    p.popMatrix();
                     break;
                 case Action.WRITE_TO_PIPS:
                     //Main.println("WRITE_TO_PIPS");
+                    p.pushMatrix();
+                    p.translate(0, 0, 10);
+                    p.image(factory.mysqlImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
+                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 10, 0xffff0000);
+                    p.popMatrix();
+                    break;
+                case Action.WRITE_TO_MIR:
+                    //Main.println("WRITE_TO_PIPS");
+                    p.pushMatrix();
+                    p.translate(0, 0, 10);
+                    p.image(factory.dynamoImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
+                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 10, 0xffff0000);
+                    p.popMatrix();
                     break;
                 case Action.WORK:
                     //Main.println("WORK");
@@ -293,9 +314,9 @@ public class Component {
 
     // common "read from s3, work, write to3, emit" pattern
     public void readWorkWriteEmit() {
-        addAction(Action.READ_FROM_S3, 30);
+        addAction(Action.READ_FROM_S3, 60);
         addAction(Action.WORK, 60);
-        addAction(Action.WRITE_TO_S3, 30);
+        addAction(Action.WRITE_TO_S3, 60);
         addAction(Action.EMIT, 1);
     }
 
