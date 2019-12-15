@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Queue;
 import processing.core.PApplet;
 import processing.core.PConstants;
-//import static processing.core.PApplet.BOTTOM;
-//import static processing.core.PApplet.CENTER;
 import processing.core.PShape;
 
 public class Component {
@@ -296,7 +294,7 @@ public class Component {
     // common "read from s3, work, write to3, emit" pattern
     public void readWorkWriteEmit() {
         addAction(Action.READ_FROM_S3, 30);
-        addAction(Action.WORK, 30);
+        addAction(Action.WORK, 60);
         addAction(Action.WRITE_TO_S3, 30);
         addAction(Action.EMIT, 1);
     }
