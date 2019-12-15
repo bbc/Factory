@@ -14,7 +14,8 @@ public class Rights extends Component {
 
     @Override
     public void click() {
+        String handler = Subherd.getRandomhandler();
         factory.addMessage(NAME)
-                .property(Message.Property.SUBTITLE_HANDLER, Distiller.NAME);
+                .property(Message.Property.SUBTITLE_HANDLER, handler);
     }
 }
