@@ -27,8 +27,8 @@ public class Main extends PApplet {
 
     @Override
     public void settings() {
-        //fullScreen(P3D);
-        size(1600, 800, P3D);
+        fullScreen(P3D);
+        //size(1600, 800, P3D);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Main extends PApplet {
         rectMode(CENTER);
         ellipseMode(CENTER);
         imageMode(CENTER);
-        //hint(ENABLE_DEPTH_SORT);
+        hint(ENABLE_DEPTH_SORT);
 
         // set up camera
         cam = new PeasyCam(this, 1000);
