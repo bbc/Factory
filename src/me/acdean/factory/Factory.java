@@ -19,6 +19,7 @@ public abstract class Factory {
     public Map<String, Component> components = new HashMap<>();
     public Map<String, Route> routes = new HashMap<>();
     public List<Message> messages = new ArrayList<>();
+    public List<Component> sources = new ArrayList<>();
     public Starkles starkles;
     PImage messageImg, audioImg, subtitleImg, clipImg, proxyImg, videoImg;
     PImage ec2Img, lambdaImg, bucketImg, cogsImg, blackBoxImg;
@@ -61,6 +62,9 @@ public abstract class Factory {
                 input.outputs.add(component.name);
                 Route route = new Route(this, input.name, component.name);
                 routes.put(route.name, route);
+            }
+            if (component.type == Component.INPUT) {
+                sources.add(component);
             }
         }
         logger.info("OUTPUTS");
@@ -128,7 +132,7 @@ public abstract class Factory {
 
         for (Message m : messages) {
             m.draw();
-            if (p.random(100) < 10) {
+            if (m.count >= 0 && m.count != Message.INACTIVE && p.random(100) < 10) {
                 starkles.add(m.x, m.y);
             }
         }
@@ -146,6 +150,12 @@ public abstract class Factory {
             p.text(mouseOverComponent.name + ": " + mouseOverComponent.description, 10, 10, width - 10, 500);
             p.rectMode(PConstants.CENTER);
             p.cam.endHUD();
+        }
+
+        // start a new random message every so many frames
+        if (p.frameCount % 300 == 0) {
+            Component c = sources.get((int)p.random(sources.size()));
+            c.click();
         }
     }
 
@@ -223,26 +233,43 @@ public abstract class Factory {
         }
     }
 
-    void drawArrow(float srcX, float srcY, float dstX, float dstY) {
+    float SPACING = 50;
+    PShape createArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
         float d = PApplet.dist(srcX, srcY, dstX, dstY);
+        float sw2 = shaftWidth / 2;
+        float prong = 15f;
+        float prongX = SPACING + sw2 + prong;
         PShape s = p.createShape();
         s.beginShape();
-        s.stroke(0);
-        s.fill(255);
+        s.stroke(colour);
+        s.fill(colour);
         s.strokeWeight(2);
-        s.vertex(d - 25, 0);
-        s.vertex(d - 50, 25);
-        s.vertex(d - 50, 10);
-        s.vertex(25, 10);
-        s.vertex(25, -10);
-        s.vertex(d - 50, -10);
-        s.vertex(d - 50, -25);
-        s.endShape(PConstants.CLOSE);
-        float a = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        s.vertex(d - SPACING, 0);   // point
+        s.vertex(d - prongX, sw2 + prong);
+        s.vertex(d - prongX, sw2);
+        s.vertex(SPACING, sw2);     // end
+        s.vertex(SPACING, -sw2);    // end
+        s.vertex(d - prongX, -sw2);
+        s.vertex(d - prongX, -sw2 - prong);
+        s.vertex(d - SPACING, 0);   // point again
+        s.endShape();
+        return s;
+    }
+    void drawArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
+        PShape arrow = createArrow(srcX, srcY, dstX, dstY, shaftWidth, colour);
+        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
         p.pushMatrix();
         p.translate(srcX, srcY);
-        p.rotate(a);
-        p.shape(s);
+        p.rotate(angle);
+        p.shape(arrow);
+        p.popMatrix();
+    }
+    void drawArrow(PShape arrow, float srcX, float srcY, float dstX, float dstY) {
+        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        p.pushMatrix();
+        p.translate(srcX, srcY);
+        p.rotate(angle);
+        p.shape(arrow);
         p.popMatrix();
     }
 }
