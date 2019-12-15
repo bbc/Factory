@@ -13,9 +13,10 @@ public class MirWriter extends Component {
         addInput(Mami.NAME);
     }
 
-    // maybe do this as a component attribute?
+    // maybe do SINK as a component attribute?
     @Override
     public void processMessage() {
+        addAction(Action.WRITE_TO_MIR, 60);
         addAction(Action.SINK);
     }
 }

@@ -166,11 +166,11 @@ public class VideoFactory extends Factory {
         x += w;
 
         addComponent(new Mami(this, x, y10));
-        addComponent(new Pips(this, x, y12));
+        //addComponent(new Pips(this, x, y12));
         x += w;
 
         addComponent(new MirWriter(this, x, y10));
-        addComponent(new Mir(this, x, y12));
+        //addComponent(new Mir(this, x, y12));
         x += w;
     }
 

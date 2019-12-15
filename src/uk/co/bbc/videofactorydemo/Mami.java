@@ -12,4 +12,10 @@ public class Mami extends Component {
         addInput(Paulette.NAME);
         addInput(PaulMami.NAME);
     }
+
+    @Override
+    public void processMessage() {
+        addAction(Action.WRITE_TO_PIPS, 60);
+        addAction(Action.EMIT);
+    }
 }
