@@ -41,6 +41,8 @@ public class Component {
     public int x, y;  // position
     int colour;
     public Message currentMessage;
+    // pshapes for arrows
+    static PShape fatArrowIn, fatArrowOut, thinArrowIn, thinArrowOut;
 
     public Component(Factory factory, int x, int y, String name) {
         this.factory = factory;
@@ -48,6 +50,14 @@ public class Component {
         this.x = x;
         this.y = y;
         this.name = name;
+
+        // init first time around
+        if (fatArrowIn == null) {
+            fatArrowIn = createArrow(p, -BUCKET_DISTANCE, -BUCKET_DISTANCE, 0, 0, 50, 0xff00ff00);
+            fatArrowOut = createArrow(p, 0, 0, BUCKET_DISTANCE, -BUCKET_DISTANCE, 50, 0xffff0000);
+            thinArrowIn = createArrow(p, -BUCKET_DISTANCE, -BUCKET_DISTANCE, 0, 0, 10, 0xff00ff00);
+            thinArrowOut = createArrow(p, 0, 0, BUCKET_DISTANCE, -BUCKET_DISTANCE, 10, 0xffff0000);
+        }
     }
 
     public final void addInput(String inputName) {
@@ -123,6 +133,7 @@ public class Component {
     }
 
     private static final int BUCKET_DISTANCE = 150;
+    private static final int BUCKET_SIZE = 150;
     public void tick() {
         if (actions.size() == 0) {
             // currently inactive so read next message
@@ -143,40 +154,40 @@ public class Component {
                     //Main.println("READ_FROM_S3");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
-                    factory.drawArrow(x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y, 50, 0xff00ff00);
+                    p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawArrow(fatArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_S3:
                     //Main.println("WRITE_TO_S3");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
-                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 50, 0xffff0000);
+                    p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawArrow(fatArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.READ_FROM_PIPS:
                     //Main.println("WRITE_FROM_PIPS");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.mysqlImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
-                    factory.drawArrow(x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y, 10, 0xff00ff00);
+                    p.image(factory.mysqlImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawArrow(thinArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_PIPS:
                     //Main.println("WRITE_TO_PIPS");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.mysqlImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
-                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 10, 0xffff0000);
+                    p.image(factory.mysqlImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawArrow(thinArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_MIR:
                     //Main.println("WRITE_TO_PIPS");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.dynamoImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 100, 100);
-                    factory.drawArrow(x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, 10, 0xffff0000);
+                    p.image(factory.dynamoImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawArrow(thinArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.WORK:
@@ -323,5 +334,47 @@ public class Component {
     @Override
     public String toString() {
         return "" + name + ": " + type + " (Actions " + actions.size() + ")";
+    }
+
+    private static float SPACING = 50;
+    private static PShape createArrow(PApplet p, float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
+        float d = PApplet.dist(srcX, srcY, dstX, dstY);
+        float sw2 = shaftWidth / 2;
+        float prong = 15f;
+        float prongX = SPACING + sw2 + prong;
+        PShape s = p.createShape();
+        s.beginShape();
+        s.stroke(colour);
+        s.fill(colour);
+        s.strokeWeight(2);
+        s.vertex(d - SPACING, 0);   // point
+        s.vertex(d - prongX, sw2 + prong);
+        s.vertex(d - prongX, sw2);
+        s.vertex(SPACING, sw2);     // end
+        s.vertex(SPACING, -sw2);    // end
+        s.vertex(d - prongX, -sw2);
+        s.vertex(d - prongX, -sw2 - prong);
+        s.vertex(d - SPACING, 0);   // point again
+        s.endShape();
+        return s;
+    }
+    @Deprecated // unused hopefully
+    void drawArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
+        PShape arrow = createArrow(p, srcX, srcY, dstX, dstY, shaftWidth, colour);
+        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        p.pushMatrix();
+        p.translate(srcX, srcY);
+        p.rotate(angle);
+        p.shape(arrow);
+        p.popMatrix();
+    }
+    // new, uses predefined arrow
+    void drawArrow(PShape arrow, float srcX, float srcY, float dstX, float dstY) {
+        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        p.pushMatrix();
+        p.translate(srcX, srcY);
+        p.rotate(angle);
+        p.shape(arrow);
+        p.popMatrix();
     }
 }

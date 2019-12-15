@@ -232,44 +232,4 @@ public abstract class Factory {
             logger.info("Message [{}]", m);
         }
     }
-
-    float SPACING = 50;
-    PShape createArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
-        float d = PApplet.dist(srcX, srcY, dstX, dstY);
-        float sw2 = shaftWidth / 2;
-        float prong = 15f;
-        float prongX = SPACING + sw2 + prong;
-        PShape s = p.createShape();
-        s.beginShape();
-        s.stroke(colour);
-        s.fill(colour);
-        s.strokeWeight(2);
-        s.vertex(d - SPACING, 0);   // point
-        s.vertex(d - prongX, sw2 + prong);
-        s.vertex(d - prongX, sw2);
-        s.vertex(SPACING, sw2);     // end
-        s.vertex(SPACING, -sw2);    // end
-        s.vertex(d - prongX, -sw2);
-        s.vertex(d - prongX, -sw2 - prong);
-        s.vertex(d - SPACING, 0);   // point again
-        s.endShape();
-        return s;
-    }
-    void drawArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
-        PShape arrow = createArrow(srcX, srcY, dstX, dstY, shaftWidth, colour);
-        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
-        p.pushMatrix();
-        p.translate(srcX, srcY);
-        p.rotate(angle);
-        p.shape(arrow);
-        p.popMatrix();
-    }
-    void drawArrow(PShape arrow, float srcX, float srcY, float dstX, float dstY) {
-        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
-        p.pushMatrix();
-        p.translate(srcX, srcY);
-        p.rotate(angle);
-        p.shape(arrow);
-        p.popMatrix();
-    }
 }
