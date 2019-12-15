@@ -1,5 +1,7 @@
 # Factory
 
+![Example](VideoFactory_01860.png)
+
 This almost certainly won't compile as is.
 
 It's a Processing project done using NetBeans rather than the PDE so there are a bunch of changes that needed to be made for that
