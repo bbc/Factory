@@ -4,11 +4,16 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PImage;
 import processing.core.PShape;
 
 public class Component {
+
+    private static final Logger logger = LoggerFactory.getLogger(Component.class);
 
     // component types
     public static final int EC2             = 0;
@@ -43,6 +48,7 @@ public class Component {
     public Message currentMessage;
     // pshapes for arrows
     static PShape fatArrowIn, fatArrowOut, thinArrowIn, thinArrowOut;
+    static PShape cogShape, pipsShape, mirShape, bucketShape;
 
     public Component(Factory factory, int x, int y, String name) {
         this.factory = factory;
@@ -53,10 +59,16 @@ public class Component {
 
         // init first time around
         if (fatArrowIn == null) {
+            logger.info("Create Arrows");
             fatArrowIn = createArrow(p, -BUCKET_DISTANCE, -BUCKET_DISTANCE, 0, 0, 50, 0xff00ff00);
             fatArrowOut = createArrow(p, 0, 0, BUCKET_DISTANCE, -BUCKET_DISTANCE, 50, 0xffff0000);
             thinArrowIn = createArrow(p, -BUCKET_DISTANCE, -BUCKET_DISTANCE, 0, 0, 10, 0xff00ff00);
             thinArrowOut = createArrow(p, 0, 0, BUCKET_DISTANCE, -BUCKET_DISTANCE, 10, 0xffff0000);
+            logger.info("Create Quads");
+            cogShape = createQuad(factory.cogsImg, BUCKET_SIZE);
+            pipsShape = createQuad(factory.mysqlImg, BUCKET_SIZE);
+            mirShape = createQuad(factory.dynamoImg, BUCKET_SIZE);
+            bucketShape = createQuad(factory.bucketImg, BUCKET_SIZE);
         }
     }
 
@@ -76,7 +88,6 @@ public class Component {
             shape.setStrokeWeight(5);
             shape.setStroke(0xffff0000);
             shape.setFill(0xff000000);
-            shape.endShape();;
             return shape;
         }
         if (type == CONNECTOR) {
@@ -117,7 +128,6 @@ public class Component {
         shape.vertex(x - HWIDTH, y + HHEIGHT, Z, 0, 1);
         shape.endShape();
 
-        // TODO names
         return shape;
     }
 
@@ -148,66 +158,75 @@ public class Component {
             Action action = actions.remove();
             switch (action.type) {
                 case Action.PAUSE:
-                    //Main.println("PAUSE");
+                    logger.debug("PAUSE");
                     break;
                 case Action.READ_FROM_S3:
-                    //Main.println("READ_FROM_S3");
+                    logger.debug("READ_FROM_S3");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawQuad(bucketShape, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    //p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    p.translate(0, 0, 10);
                     drawArrow(fatArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_S3:
-                    //Main.println("WRITE_TO_S3");
+                    logger.debug("WRITE_TO_S3");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawQuad(bucketShape, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    //p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    p.translate(0, 0, 10);
                     drawArrow(fatArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.READ_FROM_PIPS:
-                    //Main.println("WRITE_FROM_PIPS");
+                    logger.debug("WRITE_FROM_PIPS");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
-                    p.image(factory.mysqlImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    drawQuad(pipsShape, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    p.translate(0, 0, 10);
                     drawArrow(thinArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_PIPS:
-                    //Main.println("WRITE_TO_PIPS");
+                    logger.debug("WRITE_TO_PIPS");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
+                    //drawQuad(pipsShape, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.image(factory.mysqlImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    p.translate(0, 0, 10);
                     drawArrow(thinArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_MIR:
-                    //Main.println("WRITE_TO_PIPS");
+                    logger.debug("WRITE_TO_MIR");
                     p.pushMatrix();
                     p.translate(0, 0, 10);
+                    //drawQuad(mirShape, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.image(factory.dynamoImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    p.translate(0, 0, 10);
                     drawArrow(thinArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.WORK:
-                    //Main.println("WORK");
+                    logger.debug("WORK");
                     p.pushMatrix();
                     p.translate(x, y, 10);
-                    p.rotateZ(PApplet.radians(p.frameCount));
-                    p.image(factory.cogsImg, 0, 0, 100, 100);
+                    p.rotateZ(PApplet.radians(p.frameCount * 2));
+                    //drawQuad(cogShape, 0, 0);
+                    p.image(factory.cogsImg, 0, 0, 75, 75);
                     p.popMatrix();
                     break;
                 case Action.EMIT:
-                    //Main.println("EMIT");
+                    logger.debug("EMIT");
                     emit();
                     break;
                 case Action.SINK:
                     // eat the message
-                    factory.logger.info("Eating message {}", factory.messages.size());
                     factory.messages.remove(currentMessage);
                     currentMessage = null;
-                    factory.logger.info("Eating message {}", factory.messages.size());
+                    logger.info("Eating message. New size {}", factory.messages.size());
                     break;
             }
         }
@@ -215,7 +234,7 @@ public class Component {
 
     // add action to actions queue based on emssage type
     public void processMessage() {
-        //Main.println("ProcessMessage");
+        logger.debug("ProcessMessage");
         // example
 //        add(Action.PAUSE, 5);
 //        add(Action.READ_FROM_S3, 10);
@@ -223,7 +242,7 @@ public class Component {
 //        add(Action.READ_FROM_S3, 10);
 //        add(Action.PAUSE, 5);
         addAction(Action.EMIT);
-        //Main.println("Actions: ", actions.size());
+        logger.debug("Actions [{}]", actions.size());
     }
 
     public void addAction(int type) {
@@ -239,7 +258,7 @@ public class Component {
         // if there's only one output we know where it's going
         if (outputs != null && outputs.size() == 1) {
             String queueName = this.name + "_" + outputs.get(0);
-            //Main.println("QueueName", queueName);
+            logger.debug("QueueName [{}]", queueName);
             // change current message route and reset timing
             currentMessage.route(Route.routeName(this.name, outputs.get(0)));
             currentMessage.delay(0);
@@ -249,14 +268,14 @@ public class Component {
     // goes from a -> b -> a -> c
     public void loop(String start, String middle, String end) {
         if (currentMessage.property(middle) == null) {
-            //Factory.logger.info("{} -> {}", start, middle);
+            logger.debug("{} -> {}", start, middle);
             currentMessage.property(middle, "done");
             currentMessage.routeTo(middle);
         } else {
-            //Factory.logger.info("{} -> {}", start, end);
+            logger.debug("{} -> {}", start, end);
             currentMessage.routeTo(end);
         }
-        //Factory.logger.info("{} Current Message [{}]", start, currentMessage);
+        logger.debug("{} Current Message [{}]", start, currentMessage);
     }
 
     // use the DESTINATION property to choose next route
@@ -309,7 +328,7 @@ public class Component {
                     float bottom = p.screenY(x, y + 100);
                     if (p.mouseY < bottom) {
                         p.cursor(PApplet.HAND);
-                        //Factory.logger.info("Component [{}]", this);
+                        logger.debug("Component [{}]", this);
                         return true;
                     }
                 }
@@ -336,7 +355,7 @@ public class Component {
         return "" + name + ": " + type + " (Actions " + actions.size() + ")";
     }
 
-    private static float SPACING = 50;
+    private static final float SPACING = 50;
     private static PShape createArrow(PApplet p, float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
         float d = PApplet.dist(srcX, srcY, dstX, dstY);
         float sw2 = shaftWidth / 2;
@@ -361,7 +380,7 @@ public class Component {
     @Deprecated // unused hopefully
     void drawArrow(float srcX, float srcY, float dstX, float dstY, float shaftWidth, int colour) {
         PShape arrow = createArrow(p, srcX, srcY, dstX, dstY, shaftWidth, colour);
-        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        float angle = PConstants.PI + PApplet.atan2(srcY - dstY, srcX - dstX);
         p.pushMatrix();
         p.translate(srcX, srcY);
         p.rotate(angle);
@@ -370,11 +389,33 @@ public class Component {
     }
     // new, uses predefined arrow
     void drawArrow(PShape arrow, float srcX, float srcY, float dstX, float dstY) {
-        float angle = PConstants.PI + p.atan2(srcY - dstY, srcX - dstX);
+        float angle = PConstants.PI + PApplet.atan2(srcY - dstY, srcX - dstX);
         p.pushMatrix();
         p.translate(srcX, srcY);
         p.rotate(angle);
         p.shape(arrow);
+        p.popMatrix();
+    }
+    // creates a simple shape, centred on origin, containing a quad of the correct image and requested size
+    final PShape createQuad(PImage img, int size) {
+        PShape shape = p.createShape();
+        shape.beginShape();
+        shape.noStroke();
+        shape.fill(0, 0, 0, 0);
+        shape.textureMode(PConstants.NORMAL);
+        shape.texture(img);
+        shape.vertex(-size / 2, -size / 2, 0, 0);
+        shape.vertex(size / 2, -size / 2, 1, 0);
+        shape.vertex(size / 2, size / 2, 1, 1);
+        shape.vertex(-size / 2, size / 2, 0, 1);
+        shape.vertex(-size / 2, -size / 2, 0, 0);
+        shape.endShape();
+        return shape;
+    }
+    private void drawQuad(PShape shape, float x, float y) {
+        p.pushMatrix();
+        p.translate(x, y);
+        p.shape(shape);
         p.popMatrix();
     }
 }
