@@ -40,11 +40,11 @@ public class Message {
     static PShape[] shapes = null;
 
     public Message(Factory factory, String routeName) {
-        logger.info("Message Name", routeName);
+        logger.debug("Message Name", routeName);
         this.factory = factory;
         p = factory.p;
         Route routeIn = factory.routes.get(routeName);
-        logger.info("Message Name", routeName, "RouteIn", routeIn);
+        logger.debug("Message Name", routeName, "RouteIn", routeIn);
         this.route = routeIn;
         this.type(GENERIC);
         init();
@@ -57,6 +57,7 @@ public class Message {
         init();
     }
     final void init() {
+        logger.info("Message init");
         rx = p.random(PConstants.TWO_PI);
         ry = p.random(PConstants.TWO_PI);
         dx = p.random(-.04f, .04f);
@@ -87,9 +88,9 @@ public class Message {
                         break;
                 }
                 shapes[i].setTexture(img);
-                shapes[i].endShape();
             }
         }
+        logger.info("Message init done");
     }
 
     // add a delay to a message
@@ -151,7 +152,7 @@ public class Message {
                 count++;
             } else {
                 // add the message to the destination component's queue
-                logger.info("Adding [{}] to [{}]", this, route.end);
+                logger.debug("Adding [{}] to [{}]", this, route.end);
                 factory.components.get(route.end).incoming.add(this);
                 // mark as inactive
                 count = INACTIVE;
@@ -165,6 +166,9 @@ public class Message {
         public static final String DESTINATION      = "Destination";
         public static final String ENCODER          = "Encoder";
         public static final String SUBTITLE_HANDLER = "SubtitleHandler";
+        public static final String GTI_BUNDLE       = "GtiBundle";
+        public static final String WORKFLOW_SOURCE  = "WorkflowSource";
+        public static final String BALHAM_CUSTOMER  = "BalhamCustomer";
     }
 
     @Override

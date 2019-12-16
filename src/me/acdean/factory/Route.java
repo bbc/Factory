@@ -93,10 +93,11 @@ public class Route {
     }
     // try to create a shape
     PShape draw(PShape shape) {
-        logger.info("Draw");
+        logger.debug("Draw");
         PShape s = p.createShape();
         s.beginShape();
         s.noFill();
+        s.strokeWeight(2);
         s.stroke(0, 255, 0);
         s.vertex(x0, y0, DECAL_DEPTH);
         s.bezierVertex(x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);

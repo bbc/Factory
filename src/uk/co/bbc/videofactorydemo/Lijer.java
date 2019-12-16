@@ -23,13 +23,14 @@ public class Lijer extends Component {
                     new Message(factory, Route.routeName(this.name, Movver.NAME))
                         .type(Message.AUDIO)
             );
+            currentMessage.routeTo(John.NAME);
         } else {
             // video goes to pedant and john
             factory.addMessage(
-                    new Message(factory, Route.routeName(this.name, Pedant.NAME))
+                    new Message(factory, Route.routeName(this.name, John.NAME))
                         .type(Message.VIDEO)
             );
+            currentMessage.routeTo(Pedant.NAME);
         }
-        currentMessage.routeTo(John.NAME);
     }
 }
