@@ -3,6 +3,7 @@ package me.acdean.factory.example;
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
 import me.acdean.factory.Main;
+import me.acdean.factory.Message;
 import me.acdean.factory.Route;
 
 public class ExampleFactory extends Factory {
@@ -71,7 +72,7 @@ public class ExampleFactory extends Factory {
 
     // a start message
     @Override
-    public void addMessage() {
-        addMessage(Start.NAME);
+    public Message addMessage() {
+        return addMessage(Start.NAME);
     }
 }

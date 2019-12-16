@@ -34,9 +34,11 @@ public abstract class Factory {
         p = papplet;
         width = p.width;
         height = p.height;
+        loadImages();
     }
 
-    public void setupFactory() {
+    public final void loadImages() {
+        logger.info("LoadImages");
         // load all the images
         messageImg = p.loadImage("message2.png");
         audioImg = p.loadImage("audio_message2.png");
@@ -51,6 +53,10 @@ public abstract class Factory {
         dynamoImg = p.loadImage("dynamo.png");
         mysqlImg = p.loadImage("mysql.png");
         blackBoxImg = p.loadImage("blackBox.png");
+    }
+
+    public void setupFactory() {
+        logger.info("Setup Factory");
 
         logger.info("Factory Calculate Routes");
         // calculate routes and outputs from inputs
@@ -91,15 +97,13 @@ public abstract class Factory {
 
         // define and use a PShape for routes
         if (routeShape == null) {
+            logger.info("drawFactory init");
             routeShape = p.createShape(PConstants.GROUP);
-            routeShape.beginShape();
-            routeShape.noFill();
-            routeShape.stroke(0, 255, 0);
-            routeShape.strokeWeight(2);
             for (Route r : routes.values()) {
                 PShape s = r.draw(routeShape);
                 routeShape.addChild(s);
             }
+            logger.info("drawFactory done");
         }
         p.shape(routeShape);
 
@@ -113,11 +117,16 @@ public abstract class Factory {
 
         // define and use a PShape for components
         if (componentShape == null) {
+            logger.info("component shape init");
             componentShape = p.createShape(PConstants.GROUP);
+//            componentShape.beginShape();
             for (Component c : components.values()) {
                 PShape s = c.draw(componentShape);
-                componentShape.addChild(s);
+                if (s != null) {
+                    componentShape.addChild(s);
+                }
             }
+            logger.info("component shape done");
         }
         p.shape(componentShape);
 
@@ -178,7 +187,7 @@ public abstract class Factory {
         return m;
     }
 
-    abstract public void addMessage();
+    abstract public Message addMessage();
 
     public final void addRoute(String start, String end) {
         Route route = new Route(this, start, end);

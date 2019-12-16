@@ -194,8 +194,8 @@ public class VideoFactory extends Factory {
 
     // a start message
     @Override
-    public void addMessage() {
-        addMessage(Rorschach.NAME)
+    public Message addMessage() {
+        return addMessage(Rorschach.NAME)
                 .type(Message.VIDEO);
     }
 }

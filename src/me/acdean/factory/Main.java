@@ -20,6 +20,7 @@ public class Main extends PApplet {
     public PeasyCam cam;
     boolean follow;
     boolean video = false; // save frames for later video
+    Message firstMessage;   // something to follow
 
     public static void main(String[] args) {
         PApplet.main("me.acdean.factory.Main");
@@ -27,8 +28,11 @@ public class Main extends PApplet {
 
     @Override
     public void settings() {
-        fullScreen(P3D);
-        //size(1600, 800, P3D);
+        if (video) {
+            size(1920, 1080, P3D);
+        } else {
+            fullScreen(P3D);
+        }
     }
 
     @Override
@@ -42,22 +46,31 @@ public class Main extends PApplet {
         rectMode(CENTER);
         ellipseMode(CENTER);
         imageMode(CENTER);
-        hint(ENABLE_DEPTH_SORT);
+//        hint(ENABLE_DEPTH_SORT);
+//        hint(ENABLE_DEPTH_TEST);
+//        hint(ENABLE_TEXTURE_MIPMAPS);
 
         // set up camera
-        cam = new PeasyCam(this, 1000);
-        // replace rotation with panning
-        cam.setLeftDragHandler(cam.getPanDragHandler());
-        cam.setMaximumDistance(3500);
-        cam.setMinimumDistance(250);
+        if (!video) {
+            cam = new PeasyCam(this, 1000);
+            // replace rotation with panning
+            cam.setLeftDragHandler(cam.getPanDragHandler());
+            cam.setMaximumDistance(3500);
+            cam.setMinimumDistance(250);
+        } else {
+            randomSeed(1);
+        }
 
         factory = new VideoFactory(this);
         factory.setupFactory();
-        factory.addMessage();
+        firstMessage = factory.addMessage();
     }
 
     @Override
     public void draw() {
+        if (video) {
+            camera(firstMessage.x, firstMessage.y, 1400 + 800 * sin(radians(frameCount / 3)), firstMessage.x, firstMessage.y, 0, 0, 1, 0);
+        }
         background(0);
         textFont(font, 35);
         factory.drawFactory();
@@ -74,7 +87,7 @@ public class Main extends PApplet {
             logger.debug("xy: {}, {}", factory.messages.get(0).x, factory.messages.get(0).y);
             cam.lookAt(factory.messages.get(0).x, factory.messages.get(0).y, 0);
         }
-        if (frameCount % 60 == 0) {
+        if (!video && frameCount % 60 == 0) {
             logger.debug("Distance [{}]", cam.getDistance());
         }
 
@@ -84,7 +97,9 @@ public class Main extends PApplet {
                 System.exit(0);
             }
         }
-        logger.info("Messages [{}]", factory.messages.size());
+        if (frameCount % 200 == 0) {
+            logger.info("Messages [{}]", factory.messages.size());
+        }
     }
 
     @Override
