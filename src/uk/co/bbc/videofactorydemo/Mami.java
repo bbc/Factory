@@ -9,6 +9,7 @@ public class Mami extends Component {
 
     public Mami(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
+        setDescription(DESCRIPTION);
         addInput(Paulette.NAME);
         addInput(PaulMami.NAME);
     }
