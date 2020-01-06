@@ -65,7 +65,7 @@ public class Component {
             thinArrowIn = createArrow(p, -BUCKET_DISTANCE, -BUCKET_DISTANCE, 0, 0, 10, 0xff00ff00);
             thinArrowOut = createArrow(p, 0, 0, BUCKET_DISTANCE, -BUCKET_DISTANCE, 10, 0xffff0000);
             logger.info("Create Quads");
-            cogShape = createQuad(factory.cogsImg, BUCKET_SIZE);
+            cogShape = createQuad(factory.cogsImg, (int)(BUCKET_SIZE * .75));
             pipsShape = createQuad(factory.mysqlImg, BUCKET_SIZE);
             mirShape = createQuad(factory.dynamoImg, BUCKET_SIZE);
             bucketShape = createQuad(factory.bucketImg, BUCKET_SIZE);
@@ -165,9 +165,19 @@ public class Component {
                     p.pushMatrix();
                     p.translate(0, 0, 10);
                     drawQuad(bucketShape, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
-                    //p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    //p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.translate(0, 0, 10);
                     drawArrow(fatArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
+                    p.popMatrix();
+                    break;
+                case Action.METADATA_FROM_S3:
+                    logger.debug("METADATA_FROM_S3");
+                    p.pushMatrix();
+                    p.translate(0, 0, 10);
+                    drawQuad(bucketShape, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    //p.image(factory.bucketImg, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    p.translate(0, 0, 10);
+                    drawArrow(thinArrowIn, x - BUCKET_DISTANCE, y - BUCKET_DISTANCE, x, y);
                     p.popMatrix();
                     break;
                 case Action.WRITE_TO_S3:
@@ -175,9 +185,19 @@ public class Component {
                     p.pushMatrix();
                     p.translate(0, 0, 10);
                     drawQuad(bucketShape, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
-                    //p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE, BUCKET_SIZE, BUCKET_SIZE);
+                    //p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.translate(0, 0, 10);
                     drawArrow(fatArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    p.popMatrix();
+                    break;
+                case Action.WRITE_DOG_TO_S3:
+                    logger.debug("WRITE_DOG_TO_S3");
+                    p.pushMatrix();
+                    p.translate(0, 0, 10);
+                    drawQuad(bucketShape, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    //p.image(factory.bucketImg, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
+                    p.translate(0, 0, 10);
+                    drawArrow(thinArrowOut, x, y, x + BUCKET_DISTANCE, y - BUCKET_DISTANCE);
                     p.popMatrix();
                     break;
                 case Action.READ_FROM_PIPS:
@@ -214,8 +234,8 @@ public class Component {
                     p.pushMatrix();
                     p.translate(x, y, 10);
                     p.rotateZ(PApplet.radians(p.frameCount * 2));
-                    //drawQuad(cogShape, 0, 0);
-                    p.image(factory.cogsImg, 0, 0, 75, 75);
+                    drawQuad(cogShape, 0, 0);
+                    //p.image(factory.cogsImg, 0, 0, 75, 75);
                     p.popMatrix();
                     break;
                 case Action.EMIT:
@@ -401,7 +421,6 @@ public class Component {
         PShape shape = p.createShape();
         shape.beginShape();
         shape.noStroke();
-        shape.fill(0, 0, 0, 0);
         shape.textureMode(PConstants.NORMAL);
         shape.texture(img);
         shape.vertex(-size / 2, -size / 2, 0, 0);
@@ -410,6 +429,16 @@ public class Component {
         shape.vertex(-size / 2, size / 2, 0, 1);
         shape.vertex(-size / 2, -size / 2, 0, 0);
         shape.endShape();
+        return shape;
+    }
+    final PShape createQuad2(PImage img, int size) {
+        PShape shape = p.createShape(PConstants.QUAD,
+            -size / 2, -size / 2,
+            size / 2, -size / 2,
+            size / 2, size / 2,
+            -size / 2, size / 2);
+        shape.setStroke(false);
+        shape.setTexture(img);
         return shape;
     }
     private void drawQuad(PShape shape, float x, float y) {
