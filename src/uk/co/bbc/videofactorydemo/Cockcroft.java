@@ -4,8 +4,11 @@ import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
 import me.acdean.factory.Message;
 import me.acdean.factory.Route;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cockcroft extends Component {
+    public static final Logger logger = LoggerFactory.getLogger(Cockcroft.class);
     public static final String NAME = "Cockcroft";
     public static final String DESCRIPTION = "Splits the request up into similar jobs.";
 
@@ -27,6 +30,7 @@ public class Cockcroft extends Component {
 
         // aac audio splits into 6
         if (gtiBundle != null && gtiBundle.equals("aac_audio")) {
+            logger.info("AAC_AUDIO");
             String handler = null;
             if (p.random(100) < 50) {
                 handler = GtiEdc.NAME;
@@ -50,6 +54,7 @@ public class Cockcroft extends Component {
         }
         // piff hd goes to bitmovin (and gets split into 12 there)
         if (gtiBundle != null && gtiBundle.equals("piff_hd")) {
+            logger.info("PIFF_HD");
             currentMessage.route(name, CropConfigurator.NAME)
                     .type(Message.VIDEO)
                     .property(Message.Property.ENCODER, GtiBitmovin.NAME)
@@ -61,6 +66,7 @@ public class Cockcroft extends Component {
         //      bundle = sky - > elemental
         // splits into 10 at elemental
         if (gtiBundle != null && gtiBundle.equals("h264_video_proxycopy")) {
+            logger.info("H264_VIDEO_PROXYCOPY");
             currentMessage.route(name, CropConfigurator.NAME)
                     .type(Message.SUBTITLE)
                     .property(Message.Property.ENCODER, GtiEdwin.NAME)
@@ -83,6 +89,7 @@ public class Cockcroft extends Component {
 
         // old versions
         if (source != null && source.equals(MezToAudio.NAME)) {
+            logger.info("MEZ_TO_AUDIO");
             // split into two, both going go to edc
             currentMessage.route(name, CropConfigurator.NAME)
                     .type(Message.AUDIO)
@@ -98,6 +105,7 @@ public class Cockcroft extends Component {
         } else {
             // split into n going various places
             // TODO make this accurate...
+            logger.info("DEFAULT");
             currentMessage.route(this.name, CropConfigurator.NAME)
                     .type(Message.PROXY)
                     .property(Message.Property.ENCODER, GtiBitmovin.NAME)
@@ -114,7 +122,7 @@ public class Cockcroft extends Component {
                         .type(Message.VIDEO)
                         .delay(120)
                         .property(Message.Property.ENCODER, GtiBitmovin.NAME)
-                        .property(Message.Property.DESTINATION, Todd.NAME)
+                        .property(Message.Property.DESTINATION, Mattress.NAME)
             );
             factory.addMessage(
                     new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
@@ -128,7 +136,7 @@ public class Cockcroft extends Component {
                         .type(Message.AUDIO)
                         .delay(240)
                         .property(Message.Property.ENCODER, GtiEts.NAME)
-                        .property(Message.Property.DESTINATION, Todd.NAME)
+                        .property(Message.Property.DESTINATION, Mattress.NAME)
             );
             factory.addMessage(
                     new Message(factory, Route.routeName(this.name, CropConfigurator.NAME))
