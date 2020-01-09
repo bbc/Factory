@@ -14,13 +14,14 @@ public class Route {
     private static final int CONTROL_OFFSET = 200;
     private static final int DECAL_DEPTH = -10;
     
-    public static final int NORMAL = 0;
-    public static final int LOOP_BACK = 1;
-    public static final int LOOP_FORWARD = 2;
+    public static final int LINEAR = 0;
+    public static final int BEZIER = 1;
+    public static final int LOOP_BACK = 2;
+    public static final int LOOP_FORWARD = 3;
 
     Factory factory;
     String name;
-    int type = NORMAL;
+    int type = BEZIER;
     String start, end;  // components
     float x0, y0;
     float x1, y1;
@@ -42,7 +43,14 @@ public class Route {
         Component endC = factory.components.get(end);
         this.x0 = startC.x;
         this.y0 = startC.y;
+        if (startC.y == endC.y) {
+            // this is just a straight line
+            type = LINEAR;
+        }
         switch(type) {
+            case LINEAR:
+                // just a straight line - no need for control points
+                break;
             case LOOP_BACK: // out the front, in the front
                 this.x1 = startC.x + CONTROL_OFFSET / 2;
                 this.y1 = startC.y;
@@ -65,11 +73,21 @@ public class Route {
         this.y3 = endC.y;
     }
 
+    // count is 0 - 1, position along the route
     float x(float count) {
+        if (type == LINEAR) {
+            // just lerp between x0 and x3
+            return PApplet.lerp(x0, x3, count);
+        }
         return factory.p.bezierPoint(x0, x1, x2, x3, count);
     }
 
+    // count is 0 - 1, position along the route
     float y(float count) {
+        if (type == LINEAR) {
+            // single value regardless of position
+            return this.y0;
+        }
         return factory.p.bezierPoint(y0, y1, y2, y3, count);
     }
 
@@ -84,25 +102,26 @@ public class Route {
         return this;
     }
 
-    // draw is unused
-    void draw() {
-        factory.p.noFill();
-        factory.p.stroke(0, 255, 0);
-        factory.p.strokeWeight(2);
-        factory.p.bezier(x0, y0, DECAL_DEPTH, x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);
-    }
-    // try to create a shape
+    // create a shape for this route
     PShape draw(PShape shape) {
-        logger.debug("Draw");
-        PShape s = p.createShape();
-        s.beginShape();
-        s.noFill();
-        s.strokeWeight(2);
-        s.stroke(0, 255, 0);
-        s.vertex(x0, y0, DECAL_DEPTH);
-        s.bezierVertex(x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);
-        s.endShape();
-        return s;
+        if (type == LINEAR) {
+            // this is just a line so just add two vertices to the passed-in LINES shape
+            shape.vertex(x0, y0, DECAL_DEPTH);
+            shape.vertex(x3, y3, DECAL_DEPTH);
+            // and don't return a new shape
+            return null;
+        } else {
+            // bezier, so create and return a new shape
+            PShape s = p.createShape();
+            s.beginShape();
+            s.noFill();
+            s.strokeWeight(2);
+            s.stroke(0, 255, 0);
+            s.vertex(x0, y0, DECAL_DEPTH);
+            s.bezierVertex(x1, y1, DECAL_DEPTH, x2, y2, DECAL_DEPTH, x3, y3, DECAL_DEPTH);
+            s.endShape();
+            return s;
+        }
     }
 
     @Override

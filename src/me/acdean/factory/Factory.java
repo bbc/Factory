@@ -99,9 +99,28 @@ public abstract class Factory {
         if (routeShape == null) {
             logger.info("drawFactory init");
             routeShape = p.createShape(PConstants.GROUP);
+
+            // add all the linear routes as a single lines shape
+            PShape lines = p.createShape();
+            lines.beginShape(PConstants.LINES);
+            lines.noFill();
+            lines.strokeWeight(2);
+            lines.stroke(0, 255, 0);
             for (Route r : routes.values()) {
-                PShape s = r.draw(routeShape);
-                routeShape.addChild(s);
+                if (r.type == Route.LINEAR) {
+                    // add vertices to lines shape
+                    r.draw(lines);
+                }
+            }
+            lines.endShape();
+            routeShape.addChild(lines);
+
+            // then add all the bezier routes as separate children
+            for (Route r : routes.values()) {
+                if (r.type != Route.LINEAR) {
+                    PShape s = r.draw(routeShape);
+                    routeShape.addChild(s);
+                }
             }
             logger.info("drawFactory done");
         }
