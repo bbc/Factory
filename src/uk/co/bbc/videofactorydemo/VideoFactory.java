@@ -9,6 +9,13 @@ import me.acdean.factory.Route;
 //  https://daskboard.cloud.bbc.co.uk/workflows/gv/int/d6a3803f-ffd0-4407-8d8d-970e44072cc8
 public class VideoFactory extends Factory {
 
+    // generic component names
+    public static final String ALDUIN       = "Alduin";
+    public static final String BAGPUSS      = "Bagpuss";
+    public static final String BARRISTER    = "Barrister";
+    public static final String BLEEPER      = "Bleeper";
+    public static final String HERALDRY     = "Heraldry";
+
     public VideoFactory(Main p) {
         super(p);
 
@@ -47,7 +54,7 @@ public class VideoFactory extends Factory {
         addComponent(new ToddIn(this, x, y12));
         x += w;
 
-        addComponent(new Heraldry(this, x, y04));
+        addComponent(new Component(this, x, y04, HERALDRY, "Watches for FBD arrivals.", Fbd.NAME, Component.LAMBDA));
         addComponent(new MezToAudio(this, x, y06));
         addComponent(new Copper(this, x, y08)); // back to bread
         addComponent(new Bread(this, x, y10));
@@ -62,7 +69,7 @@ public class VideoFactory extends Factory {
         addComponent(new WhitePages(this, x, y02));
         addComponent(new Bifurcate(this, x, y04));
         addComponent(new Movver(this, x, y06));
-        addComponent(new Bagpuss(this, x, y08));
+        addComponent(new Component(this, x, y08, BAGPUSS, "Joins mezzanine chunks together.", Pedant.NAME));
         addComponent(new Pedant(this, x, y10));
         addComponent(new LegacyClips(this, x, y12));
         addComponent(new John(this, x, y16));
@@ -139,7 +146,7 @@ public class VideoFactory extends Factory {
         x += w;
 
         addComponent(new Pumice(this, x, y08));
-        addComponent(new Bleeper(this, x, y10));
+        addComponent(new Component(this, x, y10, BLEEPER, "Add the bleeps to an audio feed.", Mattress.NAME));
         addComponent(new Mapr(this, x, y12));
         x += w;
 
@@ -148,11 +155,11 @@ public class VideoFactory extends Factory {
         x += w;
 
         addComponent(new Sponge(this, x, y08));
-        addComponent(new Alduin(this, x, y12));
+        addComponent(new Component(this, x, y12, ALDUIN, "Drm compoment for Axinom and Common Encryption", Soprendo.NAME));
         addComponent(new Minion(this, x, y14));
         x += w;
 
-        addComponent(new Barrister(this, x, y10));
+        addComponent(new Component(this, x, y10, BARRISTER, "Sends jobs to Quality Control.", new String[]{BLEEPER, Sponge.NAME, Minion.NAME, ALDUIN}));
         x += w;
 
         addComponent(new SubtitlePaulette(this, x, y02));
@@ -181,8 +188,8 @@ public class VideoFactory extends Factory {
         updateRoute(Bread.NAME, Copper.NAME, Route.LOOP_BACK);
         updateRoute(Copper.NAME, Bread.NAME, Route.LOOP_FORWARD);
 
-        updateRoute(Pedant.NAME, Bagpuss.NAME, Route.LOOP_BACK);
-        updateRoute(Bagpuss.NAME, Pedant.NAME, Route.LOOP_FORWARD);
+        updateRoute(Pedant.NAME, BAGPUSS, Route.LOOP_BACK);
+        updateRoute(BAGPUSS, Pedant.NAME, Route.LOOP_FORWARD);
 
         updateRoute(Paulette.NAME, Mdj.NAME, Route.LOOP_BACK);
         updateRoute(Mdj.NAME, Paulette.NAME, Route.LOOP_FORWARD);

@@ -10,7 +10,7 @@ public class Pedant extends Component {
     public Pedant(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
         setDescription(DESCRIPTION);
-        addInput(Bagpuss.NAME); // loop
+        addInput(VideoFactory.BAGPUSS); // loop
         addInput(Lijer.NAME);
     }
 
@@ -19,9 +19,9 @@ public class Pedant extends Component {
     public void emit() {
         // switch depending on whether timing is accurate (random)
         if (p.random(100) < 50) {
-            loop(this.name, Bagpuss.NAME, Monk.NAME);
+            loop(this.name, VideoFactory.BAGPUSS, Monk.NAME);
         } else {
-            loop(this.name, Bagpuss.NAME, Lovett.NAME);
+            loop(this.name, VideoFactory.BAGPUSS, Lovett.NAME);
         }
     }
 }

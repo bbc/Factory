@@ -50,6 +50,25 @@ public class Component {
     static PShape fatArrowIn, fatArrowOut, thinArrowIn, thinArrowOut;
     static PShape cogShape, pipsShape, mirShape, bucketShape;
 
+    // constructor for generic component (one without its own class)
+    public Component(Factory factory, int x, int y, String name, String description, String input) {
+        this(factory, x, y, name, description, new String[]{input}, EC2);
+    }
+    public Component(Factory factory, int x, int y, String name, String description, String input, int type) {
+        this(factory, x, y, name, description, new String[]{input}, type);
+    }
+    public Component(Factory factory, int x, int y, String name, String description, String[] inputs) {
+        this(factory, x, y, name, description, inputs, EC2);
+    }
+    public Component(Factory factory, int x, int y, String name, String description, String[] inputs, int type) {
+        this(factory, x, y, name);
+        setDescription(description);
+        for (String input : inputs) {
+            addInput(input);
+        }
+        this.type = type;
+    }
+
     public Component(Factory factory, int x, int y, String name) {
         this.factory = factory;
         this.p = factory.p;

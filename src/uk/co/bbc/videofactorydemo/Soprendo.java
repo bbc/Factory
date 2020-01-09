@@ -15,6 +15,6 @@ public class Soprendo extends Component {
 
     @Override
     public void emit() {
-        currentMessage.routeTo(Alduin.NAME);
+        currentMessage.routeTo(VideoFactory.ALDUIN);
     }
 }

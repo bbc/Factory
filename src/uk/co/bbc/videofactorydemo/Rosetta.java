@@ -10,7 +10,7 @@ public class Rosetta extends Component {
     public Rosetta(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
         setDescription(DESCRIPTION);
-        addInput(Barrister.NAME);
+        addInput(VideoFactory.BARRISTER);
     }
 
     @Override

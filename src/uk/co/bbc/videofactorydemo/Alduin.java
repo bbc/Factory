@@ -3,6 +3,7 @@ package uk.co.bbc.videofactorydemo;
 import me.acdean.factory.Component;
 import me.acdean.factory.Factory;
 
+@Deprecated
 public class Alduin extends Component {
     public static final String NAME = "Alduin";
     private static final String DESCRIPTION = "Drm compoment for Axinom and Common Encryption";

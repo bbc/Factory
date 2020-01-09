@@ -10,6 +10,6 @@ public class YellowPages extends Component {
     public YellowPages(Factory factory, int x, int y) {
         super(factory, x, y, NAME);
         setDescription(DESCRIPTION);
-        addInput(Heraldry.NAME);
+        addInput(VideoFactory.HERALDRY);
     }
 }
